@@ -4,6 +4,7 @@ import com.apps.domain.Application;
 import com.apps.domain.User;
 import com.apps.service.UserService;
 import jdk.internal.org.jline.utils.Log;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,15 +17,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
     UserService userService;
-    private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-    private Log log;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserController(UserService userService) {
@@ -45,7 +44,7 @@ public class UserController {
         return "...";
     }
 
-    @GetMapping("/getApps/{id}")
+    @GetMapping("/getApp/{id}")
     public String giveAllApplicationsForUser(@PathVariable int id, Model model) throws SQLException {
         ArrayList<Application> applicationList = userService.getApplicationsForSingleUser(id);
         model.addAttribute("applicationList", applicationList.toString());
@@ -57,7 +56,7 @@ public class UserController {
     public String createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             for (ObjectError o :bindingResult.getAllErrors()){
-                log.warn("BindingResult error " + o);
+                logger.warn("BindingResult error " + o);
             }
             return "unsuccessfully";
         }
@@ -93,7 +92,7 @@ public class UserController {
             @RequestParam String email,
             @RequestParam String first_name,
             @RequestParam String last_name,
-            @RequestParam boolean edited
+            @RequestParam Boolean edited
     ) {
         boolean result = userService.updateUser(Integer.parseInt(id), user_login, user_password, email, first_name, last_name, edited);
         if (result) {

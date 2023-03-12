@@ -2,7 +2,6 @@ package com.apps.domain;
 
 import lombok.Data;
 import org.springframework.stereotype.Component;
-
 import javax.validation.constraints.Email;
 import java.sql.Date;
 

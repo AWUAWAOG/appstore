@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice
+/*@ControllerAdvice
 @CacheEvict
 public class ExceptionResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -19,4 +19,4 @@ public class ExceptionResolver {
             logger.warn("ArithmeticException" + e);
             return "unsuccessfully";
         }
-    }
+    }*/
