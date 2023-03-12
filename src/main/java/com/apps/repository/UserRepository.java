@@ -105,26 +105,6 @@ public class UserRepository {
         return result == 1;
     }
 
-    public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET user_login=?, user_password=?, email=?, first_name=?, last_name=?, edited=? WHERE id=?");
-            statement.setString(1, login);
-            statement.setString(2, password);
-            statement.setString(3, email);
-            statement.setString(4, first_name);
-            statement.setString(5, last_name);
-            statement.setDate(6, new Date((new java.util.Date()).getTime()));
-            statement.setInt(7, id);
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("updateUser ERROR");
-        }
-        return result == 1;
-    }
-
     public boolean deleteUser(int id) {
         int result = 0;
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
