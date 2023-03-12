@@ -1,92 +1,55 @@
 package com.apps.service;
 
-import com.apps.domain.Users;
+import com.apps.domain.Application;
+import com.apps.domain.User;
+import com.apps.repository.UserRepository;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
 
+@Service
 public class UserService {
-    {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
+    UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public Users getUserById(int id) {
-        Users users = new Users();
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE id=?");
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            resultSet.next();
-            users.setId(resultSet.getInt("id"));
-            users.setUser_login(resultSet.getString("user_login"));
-            users.setUser_password(resultSet.getString("user_password"));
-            users.setEmail(resultSet.getString("email"));
-            users.setFirst_name(resultSet.getString("first_name"));
-            users.setLast_name(resultSet.getString("last_name"));
-            users.setCreated(resultSet.getDate("created"));
-            users.setEdited(resultSet.getDate("edited"));
-            users.set_deleted(resultSet.getBoolean("is_deleted"));
-        } catch (SQLException e) {
-            System.out.println("GET ERROR");
-        }
-        return users;
+    @SneakyThrows
+    public ArrayList<User> getAllUsers() {
+        return userRepository.getAllUsers();
     }
 
-    public boolean createUser(String user_login, String user_password, String email, String firstName, String lastName) throws SQLException {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO users (id, user_login, user_password, email, first_name, last_name, created, edited, is_deleted) " +
-                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT)");
-            statement.setString(1, user_login);
-            statement.setString(2, user_password);
-            statement.setString(3, email);
-            statement.setString(4, firstName);
-            statement.setString(5, lastName);
-            statement.setDate(6, new Date((new java.util.Date()).getTime()));
-            statement.setDate(7, new Date((new java.util.Date()).getTime()));
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("CREATE ERROR");
-        }
-        return result == 1;
+    public User getUserById(int id) {
+        return UserRepository.getUserById(id);
     }
 
-    public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
+    public boolean createUser(User user) {
+        return userRepository.createUser(user);
+    }
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET user_login=?, user_password=?, email=?, first_name=?, last_name=?, edited=? WHERE id=?");
-            statement.setString(1, login);
-            statement.setString(2, password);
-            statement.setString(3, email);
-            statement.setString(4, first_name);
-            statement.setString(5, last_name);
-            statement.setDate(6, new Date((new java.util.Date()).getTime()));
-            statement.setInt(7, id);
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("UPDATE ERROR");
-        }
-        return result == 1;
+    public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name, boolean edited) {
+        return userRepository.updateUser(id, login, password, email, first_name, last_name, edited);
     }
 
     public boolean deleteUser(int id) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
+        return userRepository.deleteUser(id);
+    }
 
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET is_deleted=true WHERE id=?");
-            statement.setInt(1, id);
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("DELETE ERROR");
-        }
-        return result == 1;
+    public ArrayList<Application> getApplicationsForSingleUser(int id) throws SQLException {
+        return userRepository.getApplicationsForSingleUser(id);
+    }
+
+    public boolean addApplicationToUser(int userId, int applicationId) {
+        return userRepository.addApplicationToUser(userId, applicationId);
+    }
+
+    public boolean deleteApplicationFromUser(int userId, int applicationId) {
+        return userRepository.deleteApplicationFromUser(userId, applicationId);
     }
 }

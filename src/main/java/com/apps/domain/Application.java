@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @Scope
-public class Applications {
+public class Application {
     private int id;
     private String app_name;
     private String app_category;

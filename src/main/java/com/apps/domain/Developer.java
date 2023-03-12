@@ -7,7 +7,7 @@ import java.sql.Date;
 
 @Data
 @Component
-public class Developers {
+public class Developer {
     private int id;
     private String first_name;
     private String last_name;

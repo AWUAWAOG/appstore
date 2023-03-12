@@ -1,6 +1,6 @@
-<%@ page import="com.apps.domain.Users" %>
+<%@ page import="com.apps.domain.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<% Users usersJsp = (Users) request.getAttribute("users");%>
+<% User usersJsp = (User) request.getAttribute("users");%>
 <html>
 <head>
     <title>SINGLE USER</title>

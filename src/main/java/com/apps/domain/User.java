@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Data
 @Component
-public class Users {
+public class User {
     private int id;
     private String user_login;
     private String user_password;
