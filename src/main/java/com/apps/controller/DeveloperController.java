@@ -42,7 +42,7 @@ public class DeveloperController {
             /*log.warn("User is not found! Trying find id=" + id);*/
         }
         model.addAttribute("developer", developer);
-        return "...";
+        return "Developer";
     }
 
     @PostMapping

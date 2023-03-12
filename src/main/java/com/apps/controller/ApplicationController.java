@@ -39,7 +39,7 @@ public class ApplicationController {
             log.warn("getApplication ERROR " + id);
         }
         model.addAttribute("application", application);
-        return "...";
+        return "Application";
     }
 
     @PostMapping
