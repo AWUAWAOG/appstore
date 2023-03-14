@@ -1,25 +1,15 @@
 package com.apps.controller;
 
-
-import com.apps.domain.Application;
 import com.apps.domain.Developer;
-import com.apps.domain.User;
 import com.apps.service.DeveloperService;
-import com.apps.service.UserService;
-import jdk.internal.org.jline.utils.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/dev")

@@ -1,15 +1,11 @@
 package com.apps.service;
 
 import com.apps.domain.Application;
-import com.apps.domain.User;
 import com.apps.repository.ApplicationRepository;
-import com.apps.repository.UserRepository;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 @Service
 public class ApplicationService {

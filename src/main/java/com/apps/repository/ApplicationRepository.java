@@ -1,13 +1,8 @@
 package com.apps.repository;
 
 import com.apps.domain.Application;
-import com.apps.domain.User;
-import org.apache.catalina.core.AprLifecycleListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import java.sql.*;
-import java.util.ArrayList;
 
 @Repository
 public class ApplicationRepository {
