@@ -3,7 +3,6 @@ package com.apps.controller;
 import com.apps.domain.Application;
 import com.apps.domain.User;
 import com.apps.service.UserService;
-import jdk.internal.org.jline.utils.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +33,26 @@ public class UserController {
     public String getAllUsers(Model model) {
         ArrayList<User> users = userService.getAllUsers();
         model.addAttribute("users", users);
-        return "...";
+        return "AllUsers";
     }
 
     @GetMapping("/{id}")
     public String getUserById(@PathVariable int id, Model model) {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        return "...";
+        return "UserById";
     }
 
     @GetMapping("/getApp/{id}")
     public String giveAllApplicationsForUser(@PathVariable int id, Model model) throws SQLException {
         ArrayList<Application> applicationList = userService.getApplicationsForSingleUser(id);
         model.addAttribute("applicationList", applicationList.toString());
-        return "...";
+        return "AllApplications";
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public String createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) {
+    public String createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) throws SQLException {
         if (bindingResult.hasErrors()) {
             for (ObjectError o :bindingResult.getAllErrors()){
                 logger.warn("BindingResult error " + o);

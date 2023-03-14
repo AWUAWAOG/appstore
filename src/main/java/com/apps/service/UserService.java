@@ -29,8 +29,8 @@ public class UserService {
         return UserRepository.getUserById(id);
     }
 
-    public boolean createUser(String user_login, String user_password, String email, String first_name, String last_name, Date created, Date edited, Boolean is_deleted) throws SQLException {
-        return userRepository.createUser(user_login, user_password, email, first_name, last_name);
+    public boolean createUser(User user) throws SQLException {
+        return userRepository.createUser(user);
     }
 
     public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name, Boolean edited) {

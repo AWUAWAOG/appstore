@@ -2,7 +2,6 @@ package com.apps.repository;
 
 import com.apps.domain.Application;
 import com.apps.domain.User;
-import org.apache.catalina.core.AprLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -64,19 +63,19 @@ public class UserRepository {
         return user;
     }
 
-    public boolean createUser(String user_login, String user_password, String email, String firstName, String lastName) throws SQLException {
+    public boolean createUser(User user) throws SQLException {
         int result = 0;
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
 
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users (id, user_login, user_password, email, first_name, last_name, created, edited, is_deleted) " +
                     "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT,)");
-            statement.setString(1, user_login);
-            statement.setString(2, user_password);
-            statement.setString(3, email);
-            statement.setString(4, firstName);
-            statement.setString(5, lastName);
-            statement.setDate(6, new Date((new java.util.Date()).getTime()));
-            statement.setDate(7, new Date((new java.util.Date()).getTime()));
+            statement.setString(1, user.getUser_login());
+            statement.setString(2, user.getUser_password());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getFirst_name());
+            statement.setString(5, user.getLast_name());
+            statement.setDate(6, user.getCreated());
+            statement.setDate(7, user.getEdited());
 
             result = statement.executeUpdate();
         } catch (SQLException e) {
