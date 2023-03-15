@@ -68,7 +68,7 @@ public class UserRepository {
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
 
             PreparedStatement statement = connection.prepareStatement("INSERT INTO users (id, user_login, user_password, email, first_name, last_name, created, edited, is_deleted) " +
-                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT,)");
+                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT)");
             statement.setString(1, user.getUser_login());
             statement.setString(2, user.getUser_password());
             statement.setString(3, user.getEmail());
