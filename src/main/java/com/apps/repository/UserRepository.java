@@ -2,8 +2,12 @@ package com.apps.repository;
 
 import com.apps.domain.Application;
 import com.apps.domain.User;
+import com.apps.utils.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -15,105 +19,36 @@ public class UserRepository {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Object User;
 
-    public ArrayList<User> getAllUsers() {
-        ArrayList<User> resultList = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users");
-            ResultSet resultSet = statement.executeQuery();
+    public static JdbcTemplate jdbcTemplate;
 
-            while (resultSet.next()) {
-                User user = new User();
-                user.setId(resultSet.getInt("id"));
-                user.setUser_login(resultSet.getString("user_login"));
-                user.setUser_password(resultSet.getString("user_password"));
-                user.setEmail(resultSet.getString("email"));
-                user.setFirst_name(resultSet.getString("first_name"));
-                user.setLast_name(resultSet.getString("last_name"));
-                user.setCreated(resultSet.getDate("created"));
-                user.setEdited(resultSet.getDate("edited"));
-                user.set_deleted(resultSet.getBoolean("is_deleted"));
-                resultList.add((com.apps.domain.User) User);
-            }
-        } catch (SQLException e) {
-            System.out.println("getAllUsers ERROR");
-        }
-        return resultList;
+    @Autowired
+    public UserRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public ArrayList<User> getAllUsers() {
+        return (ArrayList<User>) jdbcTemplate.query("SELECT * FROM users", new UserMapper());
     }
 
     public static User getUserById(int id) {
-        User user = new User();
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE id=?");
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            resultSet.next();
-            user.setId(resultSet.getInt("id"));
-            user.setUser_login(resultSet.getString("user_login"));
-            user.setUser_password(resultSet.getString("user_password"));
-            user.setEmail(resultSet.getString("email"));
-            user.setFirst_name(resultSet.getString("first_name"));
-            user.setLast_name(resultSet.getString("last_name"));
-            user.setCreated(resultSet.getDate("created"));
-            user.setEdited(resultSet.getDate("edited"));
-            user.set_deleted(resultSet.getBoolean("is_deleted"));
-        } catch (SQLException e) {
-            System.out.println("getUserById ERROR");
-        }
-        return user;
+       return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), id);
     }
 
     public boolean createUser(User user) throws SQLException {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO users (id, user_login, user_password, email, first_name, last_name, created, edited, is_deleted) " +
-                    "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT)");
-            statement.setString(1, user.getUser_login());
-            statement.setString(2, user.getUser_password());
-            statement.setString(3, user.getEmail());
-            statement.setString(4, user.getFirst_name());
-            statement.setString(5, user.getLast_name());
-            statement.setDate(6, user.getCreated());
-            statement.setDate(7, user.getEdited());
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("createUser ERROR");
-        }
+        int result = jdbcTemplate.update("INSETR INTO users (id, user_login, user_password, email, first_name, last_name, created, edited, is_deleted)" +
+                "VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, DEFAULT)", new Object[]{user.getUser_login(), user.getUser_password(),user.getEmail(), user.getFirst_name(), user.getLast_name(),
+                new Date((new java.util.Date()).getTime()), new Date((new java.util.Date()).getTime())});
         return result == 1;
     }
 
-    public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name, boolean edited) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET user_login=?, user_password=?, email=?, first_name=?, last_name=?, edited=? WHERE id=?");
-            statement.setString(1, login);
-            statement.setString(2, password);
-            statement.setString(3, email);
-            statement.setString(4, first_name);
-            statement.setString(5, last_name);
-            statement.setDate(6, new Date((new java.util.Date()).getTime()));
-            statement.setInt(7, id);
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("updateUser ERROR");
-        }
+    public boolean updateUser(User user) {
+        int result = jdbcTemplate.update("UPDATE users SET id=?, user_login=?, user_password=?, email=?, first_name=?, last_name=?, edited=?",
+                new Object[]{user.getUser_login(), user.getUser_password(),user.getEmail(), user.getFirst_name(), user.getLast_name(), new Date((new java.util.Date()).getTime())});
         return result == 1;
     }
 
     public boolean deleteUser(int id) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET is_deleted=true WHERE id=?");
-            statement.setInt(1, id);
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("deleteUser ERROR");
-        }
+        int result = jdbcTemplate.update("UPDATE users SET is_deleted=true WGERE id=?", id);
         return result == 1;
     }
 
@@ -142,32 +77,14 @@ public class UserRepository {
     }
 
     public boolean addApplicationToUser(int userId, int applicationId) {
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO l_applications_users (id, user_id, applications_id) " + "VALUES (DEFAULT, ?, ?)");
-            statement.setInt(1, userId);
-            statement.setInt(2, applicationId);
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("addApplicationToUser ERROR");
-        }
+        int result = jdbcTemplate.update("INSETRT INTO l_applications_users (id, applications_id, users_id)" +
+                "VALUES (DEFAULT, ?, ?)", new Object[]{userId, applicationId});
         return result == 1;
     }
 
-    public boolean deleteApplicationFromUser(int userId, int applicationId) { //TODO: DELETE
-        int result = 0;
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/appstore_db", "postgres", "root")) {
-
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM l_applications_users (id, user_id, applications_id) " + "VALUES (DEFAULT, ?, ?)");
-            statement.setInt(1, userId);
-            statement.setInt(2, applicationId);
-
-            result = statement.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("deleteApplicationFromUser ERROR");
-        }
+    /*public boolean deleteApplicationFromUser(int userId, int applicationId) {
+        int result = jdbcTemplate.update("INSETRT INTO l_applications_users (id, applications_id, users_id)" +
+                "VALUES (DEFAULT, ?, ?)", new Object[]{userId, applicationId});
         return result == 1;
-    }
+    }*/
 }

@@ -33,8 +33,8 @@ public class UserService {
         return userRepository.createUser(user);
     }
 
-    public boolean updateUser(int id, String login, String password, String email, String first_name, String last_name, Boolean edited) {
-        return userRepository.updateUser(id, login, password, email, first_name, last_name, edited);
+    public boolean updateUser(User user) {
+        return userRepository.updateUser(user);
     }
 
     public boolean deleteUser(int id) {
@@ -49,7 +49,7 @@ public class UserService {
         return userRepository.addApplicationToUser(userId, applicationId);
     }
 
-    public boolean deleteApplicationFromUser(int userId, int applicationId) {
+    /*public boolean deleteApplicationFromUser(int userId, int applicationId) {
         return userRepository.deleteApplicationFromUser(userId, applicationId);
-    }
+    }*/
 }

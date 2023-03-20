@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
@@ -30,81 +29,56 @@ public class UserController {
     }
 
     @GetMapping
-    public String getAllUsers(Model model) {
-        ArrayList<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "AllUsers";
+    public ResponseEntity<ArrayList<User>> getAllUsers() {
+        ArrayList<User> list = userService.getAllUsers();
+        return new ResponseEntity<>(list,(!list.isEmpty())?HttpStatus.OK:HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable int id, Model model) {
+    public String getUserById(@PathVariable int id) {
         User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "UserById";
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/getApp/{id}")
-    public String giveAllApplicationsForUser(@PathVariable int id, Model model) throws SQLException {
-        ArrayList<Application> applicationList = userService.getApplicationsForSingleUser(id);
-        model.addAttribute("applicationList", applicationList.toString());
-        return "AllApplications";
+    public ResponseEntity<ArrayList<Application>> giveAllApplicationsForUser(@PathVariable int id) throws SQLException {
+        return new ResponseEntity<>(userService.getApplicationsForSingleUser(id), HttpStatus.OK);
     }
 
-    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public String createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) throws SQLException {
+    public ResponseEntity<HttpStatus> createUser(@ModelAttribute @Valid User user, BindingResult bindingResult) throws SQLException {
         if (bindingResult.hasErrors()) {
             for (ObjectError o :bindingResult.getAllErrors()){
                 logger.warn("BindingResult error " + o);
             }
-            return "unsuccessfully";
         }
-        boolean result = userService.createUser(user);
-        if (result) {
-            return "successfully";
-        } else
-        return "unsuccessfully";
+        userService.createUser(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/addApp")
-    public String addApplication(@RequestParam int userId, @RequestParam int applicationId) {
-        if (userService.addApplicationToUser(userId, applicationId)) {
-            return "successfully";
-        } else
-        return "unsuccessfully";
+    public ResponseEntity<HttpStatus> addApplication(@RequestParam int userId, @RequestParam int applicationId) {
+        userService.addApplicationToUser(userId, applicationId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/deleteApp")
-    public String deleteApplication(@RequestParam int userId, @RequestParam int applicationId) {
-        if (userService.deleteApplicationFromUser(userId, applicationId)) {
-            return "successfully";
-        } else
-            return "unsuccessfully";
-    }
-
+    /*@DeleteMapping("/deleteApp")
+    public ResponseEntity<HttpStatus> deleteApplication(@RequestParam int userId, @RequestParam int applicationId) {
+        userService.deleteApplicationFromUser(userId, applicationId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }*/
 
     @PutMapping
-    public String updateUser(
-            @RequestParam String id,
-            @RequestParam String user_login,
-            @RequestParam String user_password,
-            @RequestParam String email,
-            @RequestParam String first_name,
-            @RequestParam String last_name,
-            @RequestParam Boolean edited
-    ) {
-        boolean result = userService.updateUser(Integer.parseInt(id), user_login, user_password, email, first_name, last_name, edited);
-        if (result) {
-            return "successfully";
-        } else
-        return "unsuccessfully";
+    public void updateUser(@RequestParam User user) {
+       userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable int id) {
-        if (userService.deleteUser(id)) {
-            return "successfully";
-        } else
-        return "unsuccessfully";
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable int id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
