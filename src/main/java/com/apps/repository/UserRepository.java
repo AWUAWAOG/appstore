@@ -30,7 +30,7 @@ public class UserRepository {
         return (ArrayList<User>) jdbcTemplate.query("SELECT * FROM users", new UserMapper());
     }
 
-    public static User getUserById(int id) {
+    public User getUserById(int id) {
        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), id);
     }
 
