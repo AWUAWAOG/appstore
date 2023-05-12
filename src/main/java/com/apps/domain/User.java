@@ -1,29 +1,57 @@
 package com.apps.domain;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Data
-@Component
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_gen")
+    @SequenceGenerator(name = "users_id_seq_gen", sequenceName = "users_id_seq", allocationSize = 1)
     private int id;
 
+    @Column(name = "user_login")
     @Pattern(regexp = "[A-z], [0-9]")
-    @Size(min = 6, max = 15)
-    private String user_login;
+    @Size(min = 5, max = 15)
+    private String userLogin;
 
-    @Size(min = 8, max = 18)
-    private String user_password;
+    @Column(name = "user_password")
+    @Size(min = 8, max = 24)
+    private String userPassword;
 
+    @Column(name = "email")
     @Email
     private String email;
-    private String first_name;
-    private String last_name;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "created")
     private Date created;
+
+    @Column(name = "edited")
     private Date edited;
-    private boolean is_deleted;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(name = "role")
+    private String role;
 }
