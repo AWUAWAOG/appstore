@@ -3,29 +3,45 @@ package com.apps.service;
 import com.apps.domain.Application;
 import com.apps.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.*;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
 
-    ApplicationRepository applicationRepository;
+    private final ApplicationRepository applicationRepository;
 
     @Autowired
     public ApplicationService(ApplicationRepository applicationRepository) {
         this.applicationRepository = applicationRepository;
     }
 
-    public Application getApplicationById(int id) {
-        return ApplicationRepository.getApplicationById(id);
+    public ArrayList<Application> getAllApplications() {
+        return (ArrayList<Application>) applicationRepository.findAll();
     }
 
-    public boolean createApplication(String app_name, String app_category, Double rating, String description, int app_year, Double price) throws SQLException {
-        return applicationRepository.createApplication(app_name, app_category, rating, description, app_year, price); //TODO: передать все параметры
+    public Application createApplication(Application application) {
+        return applicationRepository.save(application);
     }
 
-    public boolean updateApplication(int id, Double rating, String description, Double price) {
-        return applicationRepository.updateApplication(id, rating, description, price);
+    @Transactional
+    public void deleteApplication(int id) {
+        applicationRepository.deleteApplication(id);
+    }
+
+    public Optional<Application> findApplicationByAppName(String appName) {
+        return applicationRepository.findApplicationByAppName(appName);
+    }
+
+    public Optional<Application> findApplicationByAppCategory(String category) {
+        return applicationRepository.findApplicationByAppCategory(category);
+    }
+
+    public Optional<Application> findApplicationByRating(Double rating) {
+        return applicationRepository.findApplicationByRating(rating);
     }
 }

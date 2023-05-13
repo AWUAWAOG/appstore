@@ -1,3 +1,11 @@
+    {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 create table if not exists applications
 (
 	id bigserial not null

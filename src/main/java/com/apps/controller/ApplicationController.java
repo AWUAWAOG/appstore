@@ -5,57 +5,69 @@ import com.apps.service.ApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/application")
 public class ApplicationController {
 
     ApplicationService applicationService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public ApplicationController(ApplicationService applicationService) {
         this.applicationService = applicationService;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(ApplicationController.class);
+    @GetMapping
+    public ResponseEntity<ArrayList<Application>> getAllApplications() {
+        ArrayList<Application> allApplications = applicationService.getAllApplications();
+        logger.warn(String.valueOf(allApplications));
+        return new ResponseEntity<>(allApplications, (!allApplications.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND));
+    }
 
-    @GetMapping("/{id}")
-    public String getApplication(@PathVariable int id, Model model) {
-        Application application = applicationService.getApplicationById(id);
-        if (application.getId() == 0) {
-            log.warn("getApplication ERROR " + id);
-        }
-        model.addAttribute("application", application);
-        return "Application";
+    @GetMapping("/name/{appMame}")
+    public ResponseEntity<Application> findApplicationByAppName(@PathVariable String appMame) {
+        Optional<Application> application = applicationService.findApplicationByAppName(appMame);
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    }
+
+    @GetMapping("/cat/{category}")
+    public ResponseEntity<Application> findApplicationByAppCategory(@PathVariable String category) {
+        Optional<Application> application = applicationService.findApplicationByAppCategory(category);
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    }
+
+    @GetMapping("/rat/{rating}")
+    public ResponseEntity<Application> findApplicationByRating(@PathVariable Double rating) {
+        Optional<Application> application = applicationService.findApplicationByRating(rating);
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @PostMapping
-    public String createApplication(
-            @RequestParam String app_name,
-            @RequestParam String app_category,
-            @RequestParam Double rating,
-            @RequestParam String description,
-            @RequestParam int app_year,
-            @RequestParam Double price
-    ) throws SQLException {
-        log.info("createApplication method DONE");
-        boolean result = applicationService.createApplication(app_name, app_category, rating, description, app_year, price);
-        return result ? "successfully" : "unsuccessfully";
+    public ResponseEntity<HttpStatus> createApplication(@RequestBody Application application, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            for (ObjectError o : bindingResult.getAllErrors()) {
+                logger.warn("BindingResult error " + o);
+            }
+        }
+        applicationService.createApplication(application);
+        logger.warn("Application" + application + " created!");
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public String updateApplication(
-            @RequestParam String id,
-            @RequestParam Double rating,
-            @RequestParam String description,
-            @RequestParam Double price
-    ) {
-        boolean result = applicationService.updateApplication(Integer.parseInt(id), rating, description, price);
-        return result ? "successfully" : "unsuccessfully";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteApplication(@PathVariable int id) {
+        applicationService.deleteApplication(id);
+        logger.warn("Application" + id + " deleted.");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

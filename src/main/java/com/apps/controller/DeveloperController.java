@@ -5,13 +5,17 @@ import com.apps.service.DeveloperService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Date;
-import java.sql.SQLException;
 
-@Controller
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Optional;
+
+@RestController
 @RequestMapping("/dev")
 public class DeveloperController {
 
@@ -24,44 +28,41 @@ public class DeveloperController {
         this.developerService = developerService;
     }
 
-    @GetMapping("/{id}")
-    public String getDeveloper(@PathVariable int id, Model model) {
-        /*log.info("getDeveloper method");*/
-        Developer developer = developerService.getDeveloperById(id);
-        if (developer.getId() == 0) {
-            /*log.warn("User is not found! Trying find id=" + id);*/
-        }
-        model.addAttribute("developer", developer);
-        return "Developer";
+    @GetMapping
+    public ResponseEntity<ArrayList<Developer>> getAllDevelopers() {
+        ArrayList<Developer> allDevelopers = developerService.getAllDevelopers();
+        logger.warn(String.valueOf(allDevelopers));
+        return new ResponseEntity<>(allDevelopers, (!allDevelopers.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/fnln/{firstName}, {lastName}")
+    public ResponseEntity<Developer> findDeveloperByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
+        Optional<Developer> developer = developerService.findDeveloperByFirstNameAndLastName(firstName, lastName);
+        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+    }
+
+    @GetMapping("/bd/ {birthDate}")
+    public ResponseEntity<Developer> findDeveloperByBirthDate(@PathVariable Date birthDate) {
+        Optional<Developer> developer = developerService.findDeveloperByBirthDate(birthDate);
+        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @PostMapping
-    public String createDeveloper(
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam int age,
-            @RequestParam Date birth_date
-    ) throws SQLException {
-        boolean result = developerService.createDeveloper(firstName, lastName, age, birth_date);
-        return result ? "successfully" : "unsuccessfully";
-    }
-
-    @PutMapping
-    public String updateDeveloper(
-            @RequestParam int id,
-            @RequestParam String firstName,
-            @RequestParam String lastName,
-            @RequestParam int age,
-            @RequestParam Date birth_date
-    ) {
-        boolean result = developerService.updateDeveloper(id, firstName, lastName, age, birth_date);
-        return result ? "successfully" : "unsuccessfully";
+    public ResponseEntity<HttpStatus> createDeveloper(@RequestBody Developer developer, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            for (ObjectError o : bindingResult.getAllErrors()) {
+                logger.warn("BindingResult error " + o);
+            }
+        }
+        developerService.createDeveloper(developer);
+        logger.warn("Developer" + developer + " created!");
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteDeveloper(@PathVariable int id){
-        /*log.info("deleteDeveloper method");*/
-        boolean result = developerService.deleteDeveloper(id);
-        return result ? "successfully" : "unsuccessfully";
+    public ResponseEntity<HttpStatus> deleteDeveloper(@PathVariable int id) {
+        developerService.deleteDeveloper(id);
+        logger.warn("Developer" + id + " deleted.");
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

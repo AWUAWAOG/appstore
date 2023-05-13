@@ -16,11 +16,11 @@ public class LoggerAspect {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("execution(public * com.apps.*.*(String, Long))")
-    public void f(){
+    public void f() {
     }
 
     @Pointcut("execution(public * com.apps.*.*(String))")
-    public void ff(){
+    public void ff() {
     }
 
     @Around("f() || ff()")
