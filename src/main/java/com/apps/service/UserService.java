@@ -1,8 +1,11 @@
 package com.apps.service;
 
 import com.apps.domain.User;
+import com.apps.domain.request.RegistrationRequest;
 import com.apps.repository.UserRepository;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,14 +20,11 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final UserRepository userRepository;
     private final String USER_ROLE = "USER";
     private final PasswordEncoder passwordEncoder;
-
-    @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
-    }
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
@@ -37,10 +37,10 @@ public class UserService {
         return (ArrayList<User>) userRepository.findAll();
     }
 
-    /*public User getUserById(int id) {
+    public User getUserById(int id) {
         String userLogin = SecurityContextHolder.getContext().getAuthentication().getName();
-        return UserRepository.findById(id).orElse(new User());
-    }*/
+        return userRepository.findById(id).orElse(new User());
+    }
 
     public User createUser(User user) {
         return userRepository.save(user);
@@ -68,7 +68,19 @@ public class UserService {
         return userRepository.findUserByRole(role);
     }
 
-/*public boolean userRegistration(UserRegistrationRequest userRegistrationRequest) { //TODO UserRegistrationRequest
+    public boolean userRegistration(RegistrationRequest registrationRequest) {
+        User user = new User();
+        user.setUserLogin(registrationRequest.getUserLogin());
+        user.setUserPassword(registrationRequest.getUserPassword());
+        user.setEmail(registrationRequest.getEmail());
+        user.setFirstName(registrationRequest.getFirstName());
+        user.setLastName(registrationRequest.getLastName());
+        user.setCreated(new Date(System.currentTimeMillis()));
+        user.setEdited(new Date(System.currentTimeMillis()));
+        user.setDeleted(false);
+        user.setRole(USER_ROLE);
 
-    }*/
+        logger.warn(user.toString());
+        return userRepository.save(user)!=null;
+    }
 }
