@@ -6,7 +6,11 @@
         }
     }
 
-create table if not exists applications
+
+// // // // // // // // // // // //
+
+
+create table applications
 (
 	id bigserial not null
 		constraint applications_pk
@@ -16,32 +20,34 @@ create table if not exists applications
 	rating double precision not null,
 	description text default 'NO_DESC'::text,
 	app_year integer not null,
-	price double precision not null
+	price double precision not null,
+	is_deleted boolean default false not null
 );
 
 alter table applications owner to postgres;
 
-create table if not exists users
+create table users
 (
 	id bigserial not null
 		constraint users_pk
 			primary key,
-	user_login varchar(50) not null,
+	user_login varchar(15) not null,
 	user_password varchar(24) not null,
 	email varchar(50) default 'NO_EMAIL'::character varying,
 	first_name varchar(20) not null,
 	last_name varchar(20) not null,
 	created timestamp not null,
 	edited timestamp not null,
-	is_deleted boolean default false
+	is_deleted boolean default false,
+	role varchar(50) default 'USER'::character varying
 );
 
 alter table users owner to postgres;
 
-create unique index if not exists users_user_login_uindex
+create unique index users_user_login_uindex
 	on users (user_login);
 
-create table if not exists developers
+create table developers
 (
 	id bigserial not null
 		constraint developers_pk
@@ -49,12 +55,13 @@ create table if not exists developers
 	first_name varchar(20) not null,
 	last_name varchar(20) not null,
 	age integer not null,
-	birth_date date
+	birth_date date,
+	is_deleted boolean default false not null
 );
 
 alter table developers owner to postgres;
 
-create table if not exists l_applications_developers
+create table l_applications_developers
 (
 	id bigserial not null
 		constraint l_applications_developers_pk
@@ -71,7 +78,7 @@ create table if not exists l_applications_developers
 
 alter table l_applications_developers owner to postgres;
 
-create table if not exists l_applications_users
+create table l_applications_users
 (
 	id bigserial not null
 		constraint l_applications_users_pk
@@ -87,3 +94,104 @@ create table if not exists l_applications_users
 );
 
 alter table l_applications_users owner to postgres;
+
+
+
+// // // // // // // // // // // //
+
+
+
+create sequence applications_id_seq;
+
+alter sequence applications_id_seq owner to postgres;
+
+create sequence users_id_seq;
+
+alter sequence users_id_seq owner to postgres;
+
+create sequence developers_id_seq;
+
+alter sequence developers_id_seq owner to postgres;
+
+create sequence l_applications_developers_id_seq;
+
+alter sequence l_applications_developers_id_seq owner to postgres;
+
+create sequence l_applications_users_id_seq;
+
+alter sequence l_applications_users_id_seq owner to postgres;
+
+
+
+// // // // // // // // // // // //
+
+
+
+create access method heap
+handler pg_catalog.heap_tableam_handler;
+
+comment on access method heap is 'heap table access method';
+
+create access method btree
+type index
+handler pg_catalog.bthandler;
+
+comment on access method btree is 'b-tree index access method';
+
+create access method hash
+type index
+handler pg_catalog.hashhandler;
+
+comment on access method hash is 'hash index access method';
+
+create access method gist
+type index
+handler pg_catalog.gisthandler;
+
+comment on access method gist is 'GiST index access method';
+
+create access method gin
+type index
+handler pg_catalog.ginhandler;
+
+comment on access method gin is 'GIN index access method';
+
+create access method brin
+type index
+handler pg_catalog.brinhandler;
+
+comment on access method brin is 'block range index (BRIN) access method';
+
+create access method spgist
+type index
+handler pg_catalog.spghandler;
+
+comment on access method spgist is 'SP-GiST index access method';
+
+create extension plpgsql
+schema pg_catalog
+version '1.0';
+
+comment on extension plpgsql is 'PL/pgSQL procedural language';
+
+create language internal
+	validator pg_catalog.fmgr_internal_validator;
+
+comment on language internal is 'built-in functions';
+
+create language c
+	validator pg_catalog.fmgr_c_validator;
+
+comment on language c is 'dynamically-loaded C functions';
+
+create trusted language sql
+	validator pg_catalog.fmgr_sql_validator;
+
+comment on language sql is 'SQL-language functions';
+
+create trusted language plpgsql
+	handler pg_catalog.plpgsql_call_handler
+	inline pg_catalog.plpgsql_inline_handler
+	validator pg_catalog.plpgsql_validator;
+
+comment on language plpgsql is 'PL/pgSQL procedural language';
