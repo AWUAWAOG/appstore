@@ -10,8 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.sql.Date;
 
 @Data
@@ -25,12 +23,9 @@ public class User {
     private int id;
 
     @Column(name = "user_login")
-    @Pattern(regexp = "[A-z], [0-9]")
-    @Size(min = 5, max = 15)
     private String userLogin;
 
     @Column(name = "user_password")
-    @Size(min = 8, max = 24)
     private String userPassword;
 
     @Column(name = "email")
