@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Component
 public class LoggerAspect {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("execution(public * com.apps.*.*(String, Long))")
     public void f() {
@@ -28,26 +28,26 @@ public class LoggerAspect {
         LocalTime start = LocalTime.now();
         joinPoint.proceed();
         LocalTime end = LocalTime.now();
-        log.info("Method worked time: " + (end.getNano() - start.getNano()));
+        logger.info("Method worked time: " + (end.getNano() - start.getNano()));
     }
 
     @Before("within(com.apps.*)")
     public void getLogBefore(JoinPoint joinPoint) {
-        log.info("Method " + joinPoint.getSignature() + " started!");
+        logger.info("Method " + joinPoint.getSignature() + " started!");
     }
 
     @After("within(com.apps.*)")
     public void getLogAfter(JoinPoint joinPoint) {
-        log.info("Method " + joinPoint.getSignature() + " finished!");
+        logger.info("Method " + joinPoint.getSignature() + " finished!");
     }
 
     @AfterReturning(value = "within(com.apps.*)", returning = "whatWeWait")
     public void getLogAfterReturning(Object whatWeWait) {
-        log.info("Log after returning! " + whatWeWait);
+        logger.info("Log after returning! " + whatWeWait);
     }
 
     @AfterThrowing(value = "within(com.apps.*)", throwing = "err")
     public void getLogAfterThrowing(Throwable err) {
-        log.warn("getLogAfterThrowing method" + err);
+        logger.warn("getLogAfterThrowing method" + err);
     }
 }
