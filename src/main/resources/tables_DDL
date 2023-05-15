@@ -6,6 +6,103 @@
         }
     }
 
+// // // // // // // // // // // //
+
+
+
+
+
+create table applications
+(
+	id bigserial not null
+		constraint applications_pk
+			primary key,
+	app_name varchar(100) not null,
+	app_category varchar(100) not null,
+	rating double precision not null,
+	description text default 'NO_DESC'::text,
+	app_year integer not null,
+	price double precision not null,
+	is_deleted boolean default false not null
+);
+
+alter table applications owner to postgres;
+
+create table users
+(
+	id bigserial not null
+		constraint users_pk
+			primary key,
+	user_login varchar(50) not null,
+	user_password varchar(250) not null,
+	email varchar(50) default 'NO_EMAIL'::character varying,
+	first_name varchar(50) not null,
+	last_name varchar(50) not null,
+	created timestamp not null,
+	edited timestamp not null,
+	is_deleted boolean default false,
+	role varchar(50) default 'USER'::character varying
+);
+
+alter table users owner to postgres;
+
+create unique index users_user_login_uindex
+	on users (user_login);
+
+create table developers
+(
+	id bigserial not null
+		constraint developers_pk
+			primary key,
+	first_name varchar(20) not null,
+	last_name varchar(20) not null,
+	age integer not null,
+	birth_date date,
+	is_deleted boolean default false not null
+);
+
+alter table developers owner to postgres;
+
+create table l_applications_developers
+(
+	id bigserial not null
+		constraint l_applications_developers_pk
+			primary key,
+	applications_id integer not null
+		constraint l_applications_developers_applications_id_fk
+			references applications
+				on update cascade on delete cascade,
+	developers_id integer not null
+		constraint l_applications_developers_developers_id_fk
+			references developers
+				on update cascade on delete cascade
+);
+
+alter table l_applications_developers owner to postgres;
+
+create table l_applications_users
+(
+	id bigserial not null
+		constraint l_applications_users_pk
+			primary key,
+	applications_id integer not null
+		constraint l_applications_users_applications_id_fk
+			references applications
+				on update cascade on delete cascade,
+	users_id integer not null
+		constraint l_applications_users_users_id_fk
+			references users
+				on update cascade on delete cascade
+);
+
+alter table l_applications_users owner to postgres;
+
+
+
+
+
+
+
 
 // // // // // // // // // // // //
 
