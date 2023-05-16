@@ -148,6 +148,23 @@ public class ApplicationController {
         applicationService.updateApp(application);
     }
 
+    @Operation(summary = "Adds developer to application")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Developer added to application successfully"),
+            @ApiResponse(responseCode = "400", description = "Developer did not added to application"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Can not add developer to application"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "440", description = "Login time-out"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/addDev")
+    public ResponseEntity<HttpStatus> addDev(@RequestParam int appId, @RequestParam int devId) {
+        applicationService.addDevToApp(appId, devId);
+        logger.warn("Developer added!" + devId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @Operation(summary = "Deletes application from database (changes field 'is_deleted' to TRUE)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Application deleted successfully"),

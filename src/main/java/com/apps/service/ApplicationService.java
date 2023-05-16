@@ -40,6 +40,11 @@ public class ApplicationService {
     }
 
     @Transactional
+    public void addDevToApp(int appId, int devId) {
+        applicationRepository.addDevToApp(appId, devId);
+    }
+
+    @Transactional
     public void deleteApplication(int id) {
         applicationRepository.deleteApplication(id);
     }
