@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -31,6 +32,11 @@ public class ApplicationService {
 
     public Application createApplication(Application application) {
         return applicationRepository.save(application);
+    }
+
+    public Application updateApp(Application application) {
+        application.setCreated(new Date(System.currentTimeMillis()));
+        return applicationRepository.saveAndFlush(application);
     }
 
     @Transactional

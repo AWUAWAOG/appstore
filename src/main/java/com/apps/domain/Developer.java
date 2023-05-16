@@ -32,4 +32,10 @@ public class Developer {
 
     @Column(name = "birth_date")
     private Date birthDate;
+
+    @Column(name = "created")
+    private Date created;
+
+    @Column(name = "edited")
+    private Date edited;
 }

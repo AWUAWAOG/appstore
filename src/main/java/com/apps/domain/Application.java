@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.SequenceGenerator;
+import java.sql.Date;
 
 @Data
 @Entity
@@ -37,4 +38,10 @@ public class Application {
 
     @Column(name = "price")
     private double price;
+
+    @Column(name = "created")
+    private Date created;
+
+    @Column(name = "edited")
+    private Date edited;
 }

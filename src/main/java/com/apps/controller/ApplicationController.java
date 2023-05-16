@@ -12,13 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -137,6 +131,21 @@ public class ApplicationController {
         applicationService.createApplication(application);
         logger.warn("Application" + application + " created!");
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Updates application")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Application updated"),
+            @ApiResponse(responseCode = "400", description = "Did not update application"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Applications was not updated"),
+            @ApiResponse(responseCode = "440", description = "Login time-out"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping
+    public void updateApp(@RequestBody Application application) {
+        logger.warn("User" + application + " updated!");
+        applicationService.updateApp(application);
     }
 
     @Operation(summary = "Deletes application from database (changes field 'is_deleted' to TRUE)")

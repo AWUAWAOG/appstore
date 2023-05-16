@@ -12,6 +12,7 @@
 
 
 
+
 create table applications
 (
 	id bigserial not null
@@ -96,6 +97,7 @@ create table l_applications_users
 );
 
 alter table l_applications_users owner to postgres;
+
 
 
 

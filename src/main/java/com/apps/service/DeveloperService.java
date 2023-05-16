@@ -34,6 +34,11 @@ public class DeveloperService {
         return developerRepository.save(developer);
     }
 
+    public Developer updateDev(Developer developer) {
+        developer.setCreated(new Date(System.currentTimeMillis()));
+        return developerRepository.saveAndFlush(developer);
+    }
+
     @Transactional
     public void deleteDeveloper(int id) {
         developerRepository.deleteDeveloper(id);

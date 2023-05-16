@@ -12,13 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -122,6 +116,21 @@ public class DeveloperController {
         developerService.createDeveloper(developer);
         logger.warn("Developer" + developer + " created!");
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Updates developer")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Developer updated"),
+            @ApiResponse(responseCode = "400", description = "Did not update developer"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Developers was not updated"),
+            @ApiResponse(responseCode = "440", description = "Login time-out"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping
+    public void updateDev(@RequestBody Developer developer) {
+        logger.warn("User" + developer + " updated!");
+        developerService.updateDev(developer);
     }
 
     @Operation(summary = "Deletes developer from database (changes field 'is_deleted' to TRUE)")
