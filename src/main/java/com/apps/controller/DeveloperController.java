@@ -90,7 +90,7 @@ public class DeveloperController {
             @ApiResponse(responseCode = "440", description = "Login time-out"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/bd/ {birthDate}")
+    @GetMapping("/bd/{birthDate}")
     public ResponseEntity<Developer> findDeveloperByBirthDate(@PathVariable Date birthDate) {
         Optional<Developer> developer = developerService.findDeveloperByBirthDate(birthDate);
         return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
