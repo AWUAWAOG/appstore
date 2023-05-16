@@ -105,7 +105,6 @@ alter table l_applications_users owner to postgres;
 
 
 
-
 // // // // // // // // // // // //
 
 
