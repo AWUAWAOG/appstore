@@ -51,6 +51,11 @@ public class UserService {
     }
 
     @Transactional
+    public void addAppToUser(int userId, int appId) {
+        userRepository.addAppToUser(userId, appId);
+    }
+
+    @Transactional
     public void deleteUser(int id) {
         userRepository.deleteUser(id);
     }
@@ -80,6 +85,6 @@ public class UserService {
         user.setRole(USER_ROLE);
 
         logger.warn(user.toString());
-        return userRepository.save(user)!=null;
+        return userRepository.save(user) != null;
     }
 }

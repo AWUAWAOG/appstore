@@ -12,7 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -76,7 +82,8 @@ public class ApplicationController {
     @GetMapping("/name/{appMame}")
     public ResponseEntity<Application> findApplicationByAppName(@PathVariable String appMame) {
         Optional<Application> application = applicationService.findApplicationByAppName(appMame);
-        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Gets application by category")
@@ -91,7 +98,8 @@ public class ApplicationController {
     @GetMapping("/cat/{category}")
     public ResponseEntity<Application> findApplicationByAppCategory(@PathVariable String category) {
         Optional<Application> application = applicationService.findApplicationByAppCategory(category);
-        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Gets application by rating")
@@ -106,7 +114,8 @@ public class ApplicationController {
     @GetMapping("/rat/{rating}")
     public ResponseEntity<Application> findApplicationByRating(@PathVariable Double rating) {
         Optional<Application> application = applicationService.findApplicationByRating(rating);
-        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Creates new application")

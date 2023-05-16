@@ -17,6 +17,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findUserByRole(String role);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE users SET is_deleted = true WHERE id = :id", countQuery = "SELECT * FROM users where id = :id")
+    @Query(nativeQuery = true, value = "INSERT INTO l_applications_users (id, users_id, dapplications_id) VALUES (DEFAULT, :userId, :appId)",
+            countQuery = "SELECT * FROM users WHERE users_id = :userId, SELECT * FROM applications WHERE applications_id = :appId")
+    void addAppToUser(Integer userId, Integer appId);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "UPDATE users SET is_deleted = true WHERE id = :id",
+            countQuery = "SELECT * FROM users WHERE id = :id")
     void deleteUser(Integer id);
 }

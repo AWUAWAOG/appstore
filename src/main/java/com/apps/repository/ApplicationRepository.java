@@ -15,6 +15,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     Optional<Application> findApplicationByRating(Double rating);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE applications SET is_deleted = true WHERE id = :id", countQuery = "SELECT * FROM applications where id = :id")
+    @Query(nativeQuery = true, value = "UPDATE applications SET is_deleted = true WHERE id = :id",
+            countQuery = "SELECT * FROM applications where id = :id")
     void deleteApplication(Integer id);
 }

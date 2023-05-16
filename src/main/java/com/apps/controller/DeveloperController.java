@@ -12,7 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -77,7 +83,8 @@ public class DeveloperController {
     @GetMapping("/fnln/{firstName}, {lastName}")
     public ResponseEntity<Developer> findDeveloperByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Developer> developer = developerService.findDeveloperByFirstNameAndLastName(firstName, lastName);
-        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Gets developer by birthdate")
@@ -92,7 +99,8 @@ public class DeveloperController {
     @GetMapping("/bd/ {birthDate}")
     public ResponseEntity<Developer> findDeveloperByBirthDate(@PathVariable Date birthDate) {
         Optional<Developer> developer = developerService.findDeveloperByBirthDate(birthDate);
-        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Creates developer")

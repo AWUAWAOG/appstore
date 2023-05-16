@@ -13,7 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -113,7 +121,8 @@ public class UserController {
     @GetMapping("/lg/{login}")
     public ResponseEntity<User> findUserByUserLogin(@PathVariable String login) {
         Optional<User> user = userService.findUserByUserLogin(login);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Gets user by email")
@@ -128,7 +137,8 @@ public class UserController {
     @GetMapping("/em/{email}")
     public ResponseEntity<User> findUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.findUserByEmail(email);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Gets user by role")
@@ -143,7 +153,8 @@ public class UserController {
     @GetMapping("/rl/{role}")
     public ResponseEntity<User> findUserByRole(@PathVariable String role) {
         Optional<User> user = userService.findUserByRole(role);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.CONFLICT));
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
+                -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
 
     @Operation(summary = "Updates user")
@@ -176,5 +187,22 @@ public class UserController {
         userService.deleteUser(id);
         logger.warn("User" + id + " deleted.");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Adds application to single user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Application added successfully"),
+            @ApiResponse(responseCode = "400", description = "Application did not added"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Can not add an application"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "440", description = "Login time-out"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/addApp")
+    public ResponseEntity<HttpStatus> addApp(@RequestParam int userId, @RequestParam int appId) {
+        userService.addAppToUser(userId, appId);
+        logger.warn("Application added!" + appId);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

@@ -41,7 +41,8 @@ public class JwtFilter extends GenericFilterBean {
 
         if (StringUtils.hasText(token) && token.startsWith("Bearer ") && jwtService.isValid(token.substring(7))) {
             String login = jwtService.getLoginFromToken(token.substring(7));
-            com.apps.domain.User dbUser = userRepository.findUserByUserLogin(login).orElseThrow(() -> new UsernameNotFoundException(login));
+            com.apps.domain.User dbUser = userRepository.findUserByUserLogin(login).orElseThrow(()
+                    -> new UsernameNotFoundException(login));
 
             UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
                     .username(dbUser.getUserLogin())

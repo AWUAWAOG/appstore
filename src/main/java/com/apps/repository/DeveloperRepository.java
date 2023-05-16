@@ -14,6 +14,7 @@ public interface DeveloperRepository extends JpaRepository<Developer, Integer> {
     Optional<Developer> findDeveloperByBirthDate(Date birthDate);
 
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE developers SET is_deleted = true WHERE id = :id", countQuery = "SELECT * FROM developers where id = :id")
+    @Query(nativeQuery = true, value = "UPDATE developers SET is_deleted = true WHERE id = :id",
+            countQuery = "SELECT * FROM developers where id = :id")
     void deleteDeveloper(Integer id);
 }
