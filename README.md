@@ -60,8 +60,8 @@ and has a database 'appstore_db'. To pass authentication application has admin a
 * http://localhost:8080/dev/fnln/{firstName}, {lastName} - GET method. Gets developer by firstname and lastname;
 * http://localhost:8080/dev/bd/ {birthDate} - GET method. Gets developer by birthdate;
 
-* http://localhost:8080/file/upload - POST method. Uploads a file;
-* http://localhost:8080/file - GET method. Gets a file;
+* http://localhost:8080/file/upload - POST method. Uploads a new file;
+* http://localhost:8080/file - GET method. Gets all files;
 * http://localhost:8080/file{filename} - Gets specific file;
 
 ## Endpoints for ADMINS:
