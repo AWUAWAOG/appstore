@@ -1,18 +1,3 @@
-    {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-// // // // // // // // // // // //
-
-
-
-
-
-
 create table applications
 (
 	id bigserial not null
@@ -24,7 +9,9 @@ create table applications
 	description text default 'NO_DESC'::text,
 	app_year integer not null,
 	price double precision not null,
-	is_deleted boolean default false not null
+	is_deleted boolean default false not null,
+	created timestamp,
+	edited timestamp
 );
 
 alter table applications owner to postgres;
@@ -59,7 +46,9 @@ create table developers
 	last_name varchar(20) not null,
 	age integer not null,
 	birth_date date,
-	is_deleted boolean default false not null
+	is_deleted boolean default false not null,
+	created timestamp,
+	edited timestamp
 );
 
 alter table developers owner to postgres;
@@ -97,11 +86,6 @@ create table l_applications_users
 );
 
 alter table l_applications_users owner to postgres;
-
-
-
-
-
 
 
 
