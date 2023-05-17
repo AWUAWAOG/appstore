@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.ManyToOne;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;

@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.Optional;
 
