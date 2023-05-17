@@ -12,9 +12,9 @@
     <relativePath/>
   </parent>
 
-  <name>movie_project_61</name>
+  <name>appstore</name>
   <groupId>org.example</groupId>
-  <artifactId>movie_project_61</artifactId>
+  <artifactId>appstore</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
@@ -69,10 +69,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
