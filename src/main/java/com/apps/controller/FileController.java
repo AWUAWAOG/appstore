@@ -1,5 +1,8 @@
 package com.apps.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +32,15 @@ public class FileController {
 
     private final Path ROOT_FILE_PATH = Paths.get("data");
 
+    @Operation(summary = "Uploads a new file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "File created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "File not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @PostMapping("/upload")
     public ResponseEntity<HttpStatus> upload(@RequestParam("file") MultipartFile file) {
         try {
@@ -40,6 +52,15 @@ public class FileController {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
+    @Operation(summary = "Gets a file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "File got successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "File not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         Path path = ROOT_FILE_PATH.resolve(filename);
@@ -57,6 +78,15 @@ public class FileController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @Operation(summary = "Gets all files")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Files got successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Files not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping
     public ResponseEntity<ArrayList<String>> getFiles() {
         try {
@@ -69,6 +99,15 @@ public class FileController {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.CONFLICT);
     }
 
+    @Operation(summary = "Deletes the file")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "File deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "File not deleted"),
+            @ApiResponse(responseCode = "409", description = "Conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @DeleteMapping("/{filename}")
     public ResponseEntity<HttpStatus> deleteFile(@PathVariable String filename) {
         Path path = ROOT_FILE_PATH.resolve(filename);
@@ -79,5 +118,4 @@ public class FileController {
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-
 }
