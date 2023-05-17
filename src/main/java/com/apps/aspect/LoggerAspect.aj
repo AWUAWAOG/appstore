@@ -22,14 +22,14 @@ public class LoggerAspect {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Pointcut("execution(public * com.apps.*.*(String, Long))")
-    public void f() {
+    public void firstPoint() {
     }
 
     @Pointcut("execution(public * com.apps.*.*(String))")
-    public void ff() {
+    public void secondPoint() {
     }
 
-    @Around("f() || ff()")
+    @Around("firstPoint() || secondPoint()")
     public void getLogAround(ProceedingJoinPoint joinPoint) throws Throwable {
         LocalTime start = LocalTime.now();
         joinPoint.proceed();
