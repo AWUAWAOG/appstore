@@ -26,7 +26,6 @@ public class ApplicationService {
     }
 
     public Application getAppById(int id) {
-        String appName = SecurityContextHolder.getContext().getAuthentication().getName();
         return applicationRepository.findById(id).orElse(new Application());
     }
 

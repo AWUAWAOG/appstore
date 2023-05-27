@@ -26,7 +26,6 @@ public class DeveloperService {
     }
 
     public Developer getDevById(int id) {
-        String devName = SecurityContextHolder.getContext().getAuthentication().getName();
         return developerRepository.findById(id).orElse(new Developer());
     }
 
