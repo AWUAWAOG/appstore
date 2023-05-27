@@ -5,7 +5,7 @@ This is a simple online service that provides the opportunity to purchase many d
 ## The application uses the following technologies and frameworks:
 
 * Apache Maven;
-* PostgresQL database;
+* PostgreSQL database;
 * Exception handling;
 * Hibernate;
 * Spring Data JPA;
@@ -17,7 +17,7 @@ This is a simple online service that provides the opportunity to purchase many d
 
     check out -> http://localhost:8080/swagger-ui/index.html
 
-## As application uses PostgresQL database technology it needs Postgres server (jdbc:postgresql://localhost:5432/appstore_db)
+## As application uses PostgreSQL database technology it needs Postgres server (jdbc:postgresql://localhost:5432/appstore_db)
 and has a database 'appstore_db'. To pass authentication application has admin account with:
 * username = postgres
 * password = root
