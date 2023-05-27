@@ -3,7 +3,6 @@ package com.apps.service;
 import com.apps.domain.Application;
 import com.apps.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

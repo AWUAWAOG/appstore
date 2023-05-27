@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -54,7 +55,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<ArrayList<User>> getAllUsers() {
         ArrayList<User> userList = userService.getAllUsers();
-        logger.warn(String.valueOf(userList));
+        logger.info(String.valueOf(userList));
         return new ResponseEntity<>(userList, (!userList.isEmpty()) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
@@ -69,6 +70,7 @@ public class UserController {
     }
 
     @Operation(summary = "Creates new user")
+    @Valid
     @PostMapping
     public ResponseEntity<HttpStatus> createUser(@RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -77,7 +79,7 @@ public class UserController {
             }
         }
         userService.createUser(user);
-        logger.warn("User" + user + " created!");
+        logger.info("User" + user + " created!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -115,7 +117,7 @@ public class UserController {
     @Operation(summary = "Updates user")
     @PutMapping
     public void updateUser(@RequestBody User user) {
-        logger.warn("User" + user + " updated!");
+        logger.info("User" + user + " updated!");
         userService.updateUser(user);
     }
 
@@ -123,7 +125,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
-        logger.warn("User" + id + " deleted.");
+        logger.info("User" + id + " deleted.");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -131,7 +133,7 @@ public class UserController {
     @PostMapping("/addApp")
     public ResponseEntity<HttpStatus> addApp(@RequestParam int userId, @RequestParam int appId) {
         userService.addAppToUser(userId, appId);
-        logger.warn("Application added!" + appId);
+        logger.info("Application added!" + appId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

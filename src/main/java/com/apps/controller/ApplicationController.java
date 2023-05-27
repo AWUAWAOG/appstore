@@ -12,8 +12,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -45,7 +54,7 @@ public class ApplicationController {
     @GetMapping
     public ResponseEntity<ArrayList<Application>> getAllApplications() {
         ArrayList<Application> allApplications = applicationService.getAllApplications();
-        logger.warn(String.valueOf(allApplications));
+        logger.info(String.valueOf(allApplications));
         return new ResponseEntity<>(allApplications, (!allApplications.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND));
     }
 
@@ -60,9 +69,9 @@ public class ApplicationController {
     }
 
     @Operation(summary = "Gets application by name")
-    @GetMapping("/name/{appMame}")
-    public ResponseEntity<Application> findApplicationByAppName(@PathVariable String appMame) {
-        Optional<Application> application = applicationService.findApplicationByAppName(appMame);
+    @GetMapping("/name/{appName}")
+    public ResponseEntity<Application> findApplicationByAppName(@PathVariable String appName) {
+        Optional<Application> application = applicationService.findApplicationByAppName(appName);
         return application.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
                 -> new ResponseEntity<>(HttpStatus.CONFLICT));
     }
@@ -84,6 +93,7 @@ public class ApplicationController {
     }
 
     @Operation(summary = "Creates new application")
+    @Valid
     @PostMapping
     public ResponseEntity<HttpStatus> createApplication(@RequestBody Application application, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -92,14 +102,14 @@ public class ApplicationController {
             }
         }
         applicationService.createApplication(application);
-        logger.warn("Application" + application + " created!");
+        logger.info("Application" + application + " created!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Updates application")
     @PutMapping
     public void updateApp(@RequestBody Application application) {
-        logger.warn("User" + application + " updated!");
+        logger.info("User" + application + " updated!");
         applicationService.updateApp(application);
     }
 
@@ -107,7 +117,7 @@ public class ApplicationController {
     @PostMapping("/addDev")
     public ResponseEntity<HttpStatus> addDev(@RequestParam int appId, @RequestParam int devId) {
         applicationService.addDevToApp(appId, devId);
-        logger.warn("Developer added!" + devId);
+        logger.info("Developer added!" + devId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -115,7 +125,7 @@ public class ApplicationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteApplication(@PathVariable int id) {
         applicationService.deleteApplication(id);
-        logger.warn("Application" + id + " deleted.");
+        logger.info("Application" + id + " deleted.");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

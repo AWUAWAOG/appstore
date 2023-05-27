@@ -12,8 +12,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -46,7 +54,7 @@ public class DeveloperController {
     @GetMapping
     public ResponseEntity<ArrayList<Developer>> getAllDevelopers() {
         ArrayList<Developer> allDevelopers = developerService.getAllDevelopers();
-        logger.warn(String.valueOf(allDevelopers));
+        logger.info(String.valueOf(allDevelopers));
         return new ResponseEntity<>(allDevelopers, (!allDevelopers.isEmpty() ? HttpStatus.OK : HttpStatus.NOT_FOUND));
     }
 
@@ -61,7 +69,7 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Gets developer by firstname and lastname")
-    @GetMapping("/fnln/{firstName}, {lastName}")
+    @GetMapping("/fnln/{firstName}/{lastName}")
     public ResponseEntity<Developer> findDeveloperByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Developer> developer = developerService.findDeveloperByFirstNameAndLastName(firstName, lastName);
         return developer.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(()
@@ -77,6 +85,7 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Creates developer")
+    @Valid
     @PostMapping
     public ResponseEntity<HttpStatus> createDeveloper(@RequestBody Developer developer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -85,14 +94,14 @@ public class DeveloperController {
             }
         }
         developerService.createDeveloper(developer);
-        logger.warn("Developer" + developer + " created!");
+        logger.info("Developer" + developer + " created!");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Updates developer")
     @PutMapping
     public void updateDev(@RequestBody Developer developer) {
-        logger.warn("User" + developer + " updated!");
+        logger.info("User" + developer + " updated!");
         developerService.updateDev(developer);
     }
 
@@ -100,7 +109,7 @@ public class DeveloperController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDeveloper(@PathVariable int id) {
         developerService.deleteDeveloper(id);
-        logger.warn("Developer" + id + " deleted.");
+        logger.info("Developer" + id + " deleted.");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

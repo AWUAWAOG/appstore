@@ -85,6 +85,7 @@ public class UserService {
         user.setRole(USER_ROLE);
 
         logger.warn(user.toString());
-        return userRepository.save(user) != null;
+        userRepository.save(user);
+        return true;
     }
 }
