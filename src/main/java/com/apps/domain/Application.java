@@ -9,10 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.sql.Date;
 
 @Data
 @Entity
+@Valid
 @Table(name = "applications")
 public class Application {
 
@@ -22,21 +25,26 @@ public class Application {
     private int id;
 
     @Column(name = "app_name")
+    @NotBlank
     private String appName;
 
     @Column(name = "app_category")
+    @NotBlank
     private String appCategory;
 
     @Column(name = "rating")
+    @NotBlank
     private double rating;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "app_year")
+    @NotBlank
     private int appYear;
 
     @Column(name = "price")
+    @NotBlank
     private double price;
 
     @Column(name = "created")
