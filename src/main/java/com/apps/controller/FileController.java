@@ -28,19 +28,20 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/file")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "File(s) created successfully"),
+        @ApiResponse(responseCode = "204", description = "File(s) deleted successfully"),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "404", description = "File(s) not found"),
+        @ApiResponse(responseCode = "409", description = "Conflict"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+})
 public class FileController {
 
     private final Path ROOT_FILE_PATH = Paths.get("data");
 
     @Operation(summary = "Uploads a new file")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "File created successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "File not found"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping("/upload")
     public ResponseEntity<HttpStatus> upload(@RequestParam("file") MultipartFile file) {
         try {
@@ -53,14 +54,6 @@ public class FileController {
     }
 
     @Operation(summary = "Gets a file")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "File got successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "File not found"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         Path path = ROOT_FILE_PATH.resolve(filename);
@@ -79,14 +72,6 @@ public class FileController {
     }
 
     @Operation(summary = "Gets all files")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Files got successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Files not found"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping
     public ResponseEntity<ArrayList<String>> getFiles() {
         try {
@@ -100,14 +85,6 @@ public class FileController {
     }
 
     @Operation(summary = "Deletes the file")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "File deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "File not deleted"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @DeleteMapping("/{filename}")
     public ResponseEntity<HttpStatus> deleteFile(@PathVariable String filename) {
         Path path = ROOT_FILE_PATH.resolve(filename);

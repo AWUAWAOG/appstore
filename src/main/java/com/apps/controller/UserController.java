@@ -28,9 +28,20 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "All users/user found/updated"),
+        @ApiResponse(responseCode = "201", description = "User created successfully"),
+        @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+        @ApiResponse(responseCode = "409", description = "Conflict"),
+        @ApiResponse(responseCode = "400", description = "Did not get user(s)"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "404", description = "User(s) did not found"),
+        @ApiResponse(responseCode = "440", description = "Login time-out"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+})
 public class UserController {
 
-    UserService userService;
+    private final UserService userService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -40,14 +51,6 @@ public class UserController {
     }
 
     @Operation(summary = "Gives list of all users")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "All users found"),
-            @ApiResponse(responseCode = "400", description = "Did not get users"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Users did not found"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping
     public ResponseEntity<ArrayList<User>> getAllUsers() {
         ArrayList<User> userList = userService.getAllUsers();
@@ -56,14 +59,6 @@ public class UserController {
     }
 
     @Operation(summary = "Gets user by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found"),
-            @ApiResponse(responseCode = "400", description = "Did not get user by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No user was found with such id"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) {
         User user = userService.getUserById(id);
@@ -74,14 +69,6 @@ public class UserController {
     }
 
     @Operation(summary = "Creates new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully"),
-            @ApiResponse(responseCode = "400", description = "User did not created"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not create a user"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping
     public ResponseEntity<HttpStatus> createUser(@RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -95,29 +82,13 @@ public class UserController {
     }
 
     @Operation(summary = "Register new user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully"),
-            @ApiResponse(responseCode = "400", description = "User did not created"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not create a user"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping("/reg")
     public ResponseEntity<HttpStatus> register(@RequestBody RegistrationRequest registrationRequest) {
-        Boolean result = userService.userRegistration(registrationRequest);
+        boolean result = userService.userRegistration(registrationRequest);
         return new ResponseEntity<>(result ? HttpStatus.CREATED : HttpStatus.CONFLICT);
     }
 
     @Operation(summary = "Gets user by login")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found"),
-            @ApiResponse(responseCode = "400", description = "Did not get user by login"),
-            @ApiResponse(responseCode = "401", description = "User Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No users was found with such login"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/lg/{login}")
     public ResponseEntity<User> findUserByUserLogin(@PathVariable String login) {
         Optional<User> user = userService.findUserByUserLogin(login);
@@ -126,14 +97,6 @@ public class UserController {
     }
 
     @Operation(summary = "Gets user by email")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found"),
-            @ApiResponse(responseCode = "400", description = "Did not get user by email"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No users was found with such email"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/em/{email}")
     public ResponseEntity<User> findUserByEmail(@PathVariable String email) {
         Optional<User> user = userService.findUserByEmail(email);
@@ -142,14 +105,6 @@ public class UserController {
     }
 
     @Operation(summary = "Gets user by role")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found"),
-            @ApiResponse(responseCode = "400", description = "Did not get user by role"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No users was found with such role"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/rl/{role}")
     public ResponseEntity<User> findUserByRole(@PathVariable String role) {
         Optional<User> user = userService.findUserByRole(role);
@@ -158,14 +113,6 @@ public class UserController {
     }
 
     @Operation(summary = "Updates user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User updated"),
-            @ApiResponse(responseCode = "400", description = "Did not update user"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Users was not updated"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PutMapping
     public void updateUser(@RequestBody User user) {
         logger.warn("User" + user + " updated!");
@@ -173,15 +120,6 @@ public class UserController {
     }
 
     @Operation(summary = "Deletes user from database (changes field 'is_deleted' to TRUE)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "User deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "User did not deleted"),
-            @ApiResponse(responseCode = "401", description = "User unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not delete a user"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
@@ -190,15 +128,6 @@ public class UserController {
     }
 
     @Operation(summary = "Adds application to single user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Application added successfully"),
-            @ApiResponse(responseCode = "400", description = "Application did not added"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not add an application"),
-            @ApiResponse(responseCode = "409", description = "Conflict"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping("/addApp")
     public ResponseEntity<HttpStatus> addApp(@RequestParam int userId, @RequestParam int appId) {
         userService.addAppToUser(userId, appId);

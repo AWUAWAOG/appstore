@@ -20,9 +20,20 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/dev")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "All developers/developer found/updated"),
+        @ApiResponse(responseCode = "201", description = "Developer created successfully"),
+        @ApiResponse(responseCode = "204", description = "Developer deleted successfully"),
+        @ApiResponse(responseCode = "409", description = "Conflict"),
+        @ApiResponse(responseCode = "400", description = "Did not get developer(s)"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized"),
+        @ApiResponse(responseCode = "404", description = "Developer(s) did not found"),
+        @ApiResponse(responseCode = "440", description = "Login time-out"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+})
 public class DeveloperController {
 
-    DeveloperService developerService;
+    private final DeveloperService developerService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,14 +43,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Gives list of all developers")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "All developers found"),
-            @ApiResponse(responseCode = "400", description = "Did not get developers"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Developers did not found"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping
     public ResponseEntity<ArrayList<Developer>> getAllDevelopers() {
         ArrayList<Developer> allDevelopers = developerService.getAllDevelopers();
@@ -48,14 +51,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Gets developer by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Developer found"),
-            @ApiResponse(responseCode = "400", description = "Did not get developer by id"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No developers were found with such id"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<Developer> getDevById(@PathVariable int id) {
         Developer developer = developerService.getDevById(id);
@@ -66,14 +61,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Gets developer by firstname and lastname")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Developer found"),
-            @ApiResponse(responseCode = "400", description = "Did not get developer by firstname and lastname"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No developers was found with such firstname and lastname"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/fnln/{firstName}, {lastName}")
     public ResponseEntity<Developer> findDeveloperByFirstNameAndLastName(@PathVariable String firstName, @PathVariable String lastName) {
         Optional<Developer> developer = developerService.findDeveloperByFirstNameAndLastName(firstName, lastName);
@@ -82,14 +69,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Gets developer by birthdate")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Developer found"),
-            @ApiResponse(responseCode = "400", description = "Did not get developer by birthdate"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "No developers was found with such birthdate"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping("/bd/{birthDate}")
     public ResponseEntity<Developer> findDeveloperByBirthDate(@PathVariable Date birthDate) {
         Optional<Developer> developer = developerService.findDeveloperByBirthDate(birthDate);
@@ -98,14 +77,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Creates developer")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Developer created successfully"),
-            @ApiResponse(responseCode = "400", description = "Developer did not created"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not create a developer"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping
     public ResponseEntity<HttpStatus> createDeveloper(@RequestBody Developer developer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -119,14 +90,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Updates developer")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Developer updated"),
-            @ApiResponse(responseCode = "400", description = "Did not update developer"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Developers was not updated"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PutMapping
     public void updateDev(@RequestBody Developer developer) {
         logger.warn("User" + developer + " updated!");
@@ -134,14 +97,6 @@ public class DeveloperController {
     }
 
     @Operation(summary = "Deletes developer from database (changes field 'is_deleted' to TRUE)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Developer deleted successfully"),
-            @ApiResponse(responseCode = "400", description = "Developer did not deleted"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "404", description = "Can not delete a developer"),
-            @ApiResponse(responseCode = "440", description = "Login time-out"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDeveloper(@PathVariable int id) {
         developerService.deleteDeveloper(id);
