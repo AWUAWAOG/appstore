@@ -109,8 +109,8 @@ public class ApplicationController {
     @Operation(summary = "Updates application")
     @PutMapping
     public void updateApp(@RequestBody Application application) {
-        logger.info("User" + application + " updated!");
         applicationService.updateApp(application);
+        logger.info("User" + application + " updated!");
     }
 
     @Operation(summary = "Adds developer to application")

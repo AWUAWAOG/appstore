@@ -101,8 +101,8 @@ public class DeveloperController {
     @Operation(summary = "Updates developer")
     @PutMapping
     public void updateDev(@RequestBody Developer developer) {
-        logger.info("User" + developer + " updated!");
         developerService.updateDev(developer);
+        logger.info("User" + developer + " updated!");
     }
 
     @Operation(summary = "Deletes developer from database (changes field 'is_deleted' to TRUE)")

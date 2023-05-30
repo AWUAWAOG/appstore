@@ -7,8 +7,7 @@ This is a simple online service that provides the opportunity to purchase many d
 * Apache Maven;
 * PostgreSQL database;
 * Exception handling;
-* Hibernate;
-* Spring Data JPA;
+* Spring Data Jpa;
 * Spring Boot. Rest API. DTO;
 * Java Persistence API;
 * Spring Security JWT.

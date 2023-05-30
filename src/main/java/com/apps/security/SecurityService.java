@@ -30,7 +30,7 @@ public class SecurityService {
     public String getTokenFromRequest(AuthRequest authRequest) {
         Optional<User> user = userRepository.findUserByUserLogin(authRequest.getLogin());
         if (user.isPresent() && passwordEncoder.matches(authRequest.getPassword(), user.get().getUserPassword())) {
-            logger.warn(user.toString());
+            logger.info(user.toString());
             return jwtService.createJwtToken(authRequest.getLogin());
         }
         logger.warn(user.toString());

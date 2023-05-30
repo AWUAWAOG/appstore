@@ -27,7 +27,7 @@ public class SecurityController {
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest) {
         String result = securityService.getTokenFromRequest(authRequest);
         if (!result.isBlank()) {
-            logger.warn(result);
+            logger.info(result);
             return new ResponseEntity<>(new AuthResponse(result), HttpStatus.CREATED);
         }
         logger.warn(result);

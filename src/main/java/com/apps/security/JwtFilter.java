@@ -52,7 +52,7 @@ public class JwtFilter extends GenericFilterBean {
             UsernamePasswordAuthenticationToken userAuth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(userAuth);
         }
-        logger.warn("doFilter method done successfully" + servletRequest + servletResponse);
+        logger.info("doFilter method done successfully" + servletRequest + servletResponse);
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }

@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,6 @@ public class UserService {
     }
 
     public User getUserById(int id) {
-        String userLogin = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findById(id).orElse(new User());
     }
 
@@ -72,7 +70,7 @@ public class UserService {
         return userRepository.findUserByRole(role);
     }
 
-    public boolean userRegistration(RegistrationRequest registrationRequest) {
+    public void userRegistration(RegistrationRequest registrationRequest) {
         User user = new User();
         user.setUserLogin(registrationRequest.getUserLogin());
         user.setUserPassword(passwordEncoder.encode(registrationRequest.getUserPassword()));
@@ -84,8 +82,7 @@ public class UserService {
         user.setDeleted(false);
         user.setRole(USER_ROLE);
 
-        logger.warn(user.toString());
+        logger.info(user.toString());
         userRepository.save(user);
-        return true;
     }
 }

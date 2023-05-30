@@ -86,8 +86,8 @@ public class UserController {
     @Operation(summary = "Register new user")
     @PostMapping("/reg")
     public ResponseEntity<HttpStatus> register(@RequestBody RegistrationRequest registrationRequest) {
-        boolean result = userService.userRegistration(registrationRequest);
-        return new ResponseEntity<>(result ? HttpStatus.CREATED : HttpStatus.CONFLICT);
+        userService.userRegistration(registrationRequest);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Operation(summary = "Gets user by login")
